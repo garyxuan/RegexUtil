@@ -142,14 +142,14 @@ public class RegexUtil {
     /**
      * 重复0-1次，等效于{0,1}或？
      */
-    	public RegexUtil repeatZeroOrOne(){
+    	public RegexUtil repeatZeroOrOne() {
     		return minMatch();
     	}
     	
     	/**
     	 * 重复1-N次，等效于{1,}
     	 */
-    	public RegexUtil repeatOneOrMore	() {
+    	public RegexUtil repeatOneOrMore() {
     		//判断最外面是不是中括号 不是则在两边加上小括号
     		sBuffer = addMinBracketIfNoMidBracket(sBuffer);
     		sBuffer.append("+");
@@ -159,7 +159,7 @@ public class RegexUtil {
   /** 重复num次
     * @param num 次数
     */
-    public RegexUtil repeat(int num){
+    public RegexUtil repeat(int num) {
     	//判断最外面是不是中括号 不是则在两边加上小括号
     		sBuffer=addMinBracketIfNoMidBracket(sBuffer);
     		sBuffer.append("{"+num+"}");
@@ -171,7 +171,7 @@ public class RegexUtil {
      * @param min 最小
      * @param max 最大
      */
-    public RegexUtil repeat(int min,int max){
+    public RegexUtil repeat(int min,int max) {
 	    	//判断最外面是不是中括号 不是则在两边加上小括号
 	    	sBuffer=addMinBracketIfNoMidBracket(sBuffer);
 	    	sBuffer.append("{"+min+","+max+"}");
@@ -182,7 +182,7 @@ public class RegexUtil {
      * 至少重复num次
      * @param num 次数
      */
-    public RegexUtil repeatMin(int num){
+    public RegexUtil repeatMin(int num) {
     		//判断最外面是不是中括号 不是则在两边加上小括号
     		sBuffer=addMinBracketIfNoMidBracket(sBuffer);
     		sBuffer.append("{"+num+",}");
@@ -208,7 +208,7 @@ public class RegexUtil {
      * @param sb
      * @return boolean 是 true，否则 false。
      */
-    private boolean checkMidBracket(StringBuffer sb){
+    private boolean checkMidBracket(StringBuffer sb) {
         if("[".equals(sb.substring(0, 1)) && "]".equals(sb.substring(sb.length()-1))){
             return true;
         }else{
@@ -221,7 +221,7 @@ public class RegexUtil {
      * @param str 字符串
      * @return StringBuffer
      */
-    private StringBuffer addMinBrackets(StringBuffer sb){
+    private StringBuffer addMinBrackets(StringBuffer sb) {
         return new StringBuffer("("+sb+")");
     }
     
@@ -231,7 +231,7 @@ public class RegexUtil {
      * @param str 字符串
      * @return StringBuffer
      */
-    private StringBuffer addMidBrackets(StringBuffer sb){
+    private StringBuffer addMidBrackets(StringBuffer sb) {
         return new StringBuffer("["+sb+"]");
     }
     
@@ -240,7 +240,7 @@ public class RegexUtil {
      * @param str 字符串
      * @return String
      */
-    private String removeMidBrackets(StringBuffer sb){
+    private String removeMidBrackets(StringBuffer sb) {
         return sb.toString().replaceAll("^\\[", "").replaceAll("\\]$", "");
     }
     
@@ -335,7 +335,9 @@ public class RegexUtil {
 	}
 	
 	public static void main(String[] args) {
-		//验证邮箱总规则。
+		//例子：验证是否为合法邮箱。
+		
+		//用法1：分部
 		//邮箱名允许大小写字母数字下划线，域名可以是数字，大小写字母，点，下划线。
 		RegexUtil emaiRegex = new RegexUtil();
 		
@@ -346,16 +348,12 @@ public class RegexUtil {
 		emaiRegex.append(before);
 		//追加上@
 		emaiRegex.append("@");
-		System.out.println("step 1 " + before.toString());
 		
 		//@之后到最后一个域名点之前的规则
 		RegexUtil after = new RegexUtil(RegexUtil.letterAndNumAndUnderLine);
 		after.or(".");//允许点，防止耳机域名 @vip.qq.com
-		System.out.println("aaa" + after.toString());
 		after.or("-");//允许中划线
-		System.out.println("bbb" + after.toString());
 		after.repeatOneOrMore();
-		System.out.println("ccc" + after.toString());
 		
 		//追加到总规则
 		emaiRegex.append(after);
@@ -374,22 +372,23 @@ public class RegexUtil {
 		Matcher matcher = pattern.matcher("78gary@vip.qq.com");
 		System.out.println(matcher.matches());
 		
-//		RegexUtil emaiRegex = new RegexUtil();
-//		emaiRegex.append(RegexUtil.letterAndNumAndUnderLine)
-//							 .repeatOneOrMore()
-//							 .append("@")
-//							 .append(new RegexUtil(RegexUtil.letterAndNumAndUnderLine)
-//									 .or(".")
-//									 .or("-")
-//									 .repeatOneOrMore() )
-//							 .append(".")
-//							 .append(new RegexUtil(RegexUtil.lowLetter)
-//									 .repeatOneOrMore() );
-//		System.out.println(emaiRegex);
-//		
-//		Pattern pattern = Pattern.compile(emaiRegex.toString());
-//		Matcher matcher = pattern.matcher("78gary@vip.qq.com");
-//		System.out.println(matcher.matches());			 
+		//用法二：一气呵成
+		RegexUtil emaiRegex1 = new RegexUtil();
+		emaiRegex1.append(RegexUtil.letterAndNumAndUnderLine)
+							 .repeatOneOrMore()
+							 .append("@")
+							 .append(new RegexUtil(RegexUtil.letterAndNumAndUnderLine)
+									 .or(".")
+									 .or("-")
+									 .repeatOneOrMore() )
+							 .append(".")
+							 .append(new RegexUtil(RegexUtil.lowLetter)
+									 .repeatOneOrMore() );
+		System.out.println(emaiRegex1);
+		
+		Pattern pattern1 = Pattern.compile(emaiRegex1.toString());
+		Matcher matcher1 = pattern1.matcher("78gary@vip.qq.com");
+		System.out.println(matcher1.matches());			 
 		
 		
 	}
