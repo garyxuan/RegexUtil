@@ -3,7 +3,7 @@
 
 ##Usage
 ```java
-		//例子：验证是否为合法邮箱。
+//例子：验证是否为合法邮箱。
 		
 		//用法1：分部
 		//邮箱名允许大小写字母数字下划线，域名可以是数字，大小写字母，点，下划线。
@@ -52,8 +52,8 @@
 							 .append(".")
 							 .append(new RegexUtil(RegexUtil.lowLetter)
 									 .repeatOneOrMore() );
-		System.out.println(emaiRegex);
+		System.out.println(emaiRegex1);
 		
 		Pattern pattern1 = Pattern.compile(emaiRegex1.toString());
 		Matcher matcher1 = pattern1.matcher("78gary@vip.qq.com");
-		System.out.println(matcher1.matches());	
+		System.out.println(matcher1.matches());
